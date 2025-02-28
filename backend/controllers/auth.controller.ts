@@ -1,10 +1,8 @@
 import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import path from "path";
-import jwt from "jsonwebtoken";
+import jwt, {JwtPayload} from "jsonwebtoken";
 
-// Config
-import { StatusCode } from "../config/statuscode.config";
 
 // Models
 import User, { IUser } from "../models/user.model";
@@ -12,6 +10,9 @@ import VerificationEmailSession, { IVerificationEmailSession } from "../models/v
 
 // Utils
 import { SendEmailVerification } from "../utils/SendEmailVerification";
+import { StatusCode } from "../utils/StatusCode";
+import { INTERNAL_SERVER_ERROR } from "../utils/Errors";
+import { CreateSendJWT } from "../utils/CreateSendJWT";
 
 // Register User
 export const Register = async (req: Request, res: Response):Promise<void> => {
@@ -50,13 +51,8 @@ export const Register = async (req: Request, res: Response):Promise<void> => {
             message: "User created successfully",
         })
     } catch (error) {
-        if(process.env.NODE_ENV as string === "development"){
-            console.log(error);
-            return;
-        }
-        res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-            ok: false,
-            message: "Internal Server Error"
+        INTERNAL_SERVER_ERROR(res, ():void=>{
+            console.log(error)
         })
     }
 };
@@ -107,13 +103,8 @@ export const VerifyEmail = async (req: Request, res: Response):Promise<void> => 
 
         res.sendFile(path.join(__dirname, "../public/email-verification-page/verified.html"));
     } catch (error) {
-        if(process.env.NODE_ENV as string === "development"){
-            console.log(error);
-            return;
-        }
-        res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-            ok: false,
-            message: "Internal Server Error"
+        INTERNAL_SERVER_ERROR(res, ():void=>{
+            console.log(error)
         })
     }
 }
@@ -136,16 +127,8 @@ export const ResendVerificationEmail = async (req: Request, res: Response):Promi
             message: "Verification email sent successfully"
         })
     } catch (error) {
-        if(process.env.NODE_ENV as string === "development"){
-            res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-                ok: false,
-                message: "Internal Server Error"
-            })
-            return;
-        }
-        res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-            ok: false,
-            message: "Internal Server Error"
+        INTERNAL_SERVER_ERROR(res, ():void=>{
+            console.log(error)
         })
     }
 }
@@ -155,7 +138,23 @@ export const Login = async (req: Request, res: Response):Promise<void> => {
     try {
         const {password} = req.body;
 
-        const isPasswordCorrect:boolean = await bcryptjs.compare(password, req.body.user.password);
+        if(!req.user.isVerified){
+            const isEmailSent:boolean = await SendEmailVerification(req.user.email, req.user.name, req.user._id as string)
+            if(!isEmailSent){
+                res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
+                    ok: false,
+                    message: "Internal Server Error"
+                })
+                return;
+            }
+            res.status(StatusCode.UNAUTHORIZED).json({
+                ok: false,
+                msg: "Email is not verified. We have sent you a email for verification. Check your spam folder or inbox"
+            })
+            return;
+        }
+
+        const isPasswordCorrect:boolean = await bcryptjs.compare(password, req.user.password);
         if(!isPasswordCorrect){
             res.status(StatusCode.BAD_REQUEST).json({
                 ok: false,
@@ -164,21 +163,11 @@ export const Login = async (req: Request, res: Response):Promise<void> => {
             return;
         }
 
-        const token:string = jwt.sign({userId: req.body.user._id}, process.env.JWT_SECRET as string, {expiresIn: "28d", algorithm: "HS512"});
+        await CreateSendJWT(req.user,res);
 
-        res.status(StatusCode.OK).json({
-            ok: true,
-            message: "Login successful",
-            token
-        })
     } catch (error) {
-        if(process.env.NODE_ENV as string === "development"){
-            console.log(error);
-            return;
-        }
-        res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
-            ok: false,  
-            message: "Internal Server Error"    
+        INTERNAL_SERVER_ERROR(res, ():void=>{
+            console.log(error)
         })
     }
 }

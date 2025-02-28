@@ -1,6 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import User, { IUser } from "../models/user.model";
-import { StatusCode } from "../config/statuscode.config";
+import { StatusCode } from "../utils/StatusCode";
+
+declare module 'express-serve-static-core' {
+    interface Request {
+        user: IUser;
+    }
+}
 
 export const IsUser = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try {
@@ -14,7 +20,8 @@ export const IsUser = async (req: Request, res: Response, next: NextFunction):Pr
             })
             return;
         }
-        req.body.user = isUser;
+
+        req.user = isUser;
         next();
     } catch (error) {
         if(process.env.NODE_ENV as string === "development"){

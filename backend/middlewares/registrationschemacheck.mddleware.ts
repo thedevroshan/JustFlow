@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { Request, Response, NextFunction } from "express";
-import { StatusCode } from "../config/statuscode.config";
+import { StatusCode } from "../utils/StatusCode";
 
 const RegistrationSchema = z.object({
     name: z.string().min(1),
