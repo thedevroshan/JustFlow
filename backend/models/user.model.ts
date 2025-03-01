@@ -10,6 +10,8 @@ export interface IUser extends Document {
     isVerified: boolean;
     teams: Schema.Types.ObjectId[];
     projects: Schema.Types.ObjectId[];
+    joinedTeams: Schema.Types.ObjectId[];
+    joinedProject: Schema.Types.ObjectId[];
 }
 
 const UserSchema:Schema<IUser> = new Schema<IUser>({
@@ -40,6 +42,16 @@ const UserSchema:Schema<IUser> = new Schema<IUser>({
         ref: "Project",
         default: [],
     },
+    joinedProject: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Project',
+        default: []
+    },
+    joinedTeams: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Team',
+        default: []
+    }
 }, {timestamps: true});
 
 const User:Model<IUser> = mongoose.model<IUser>("User", UserSchema);

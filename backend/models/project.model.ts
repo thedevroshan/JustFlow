@@ -3,23 +3,25 @@ import { Schema,Document,Model, model } from "mongoose";
 
 
 export interface IProject extends Document {
-    user: Schema.Types.ObjectId;
     name: string;
+    description: string;
     projectIcon: string;
     members: Schema.Types.ObjectId[];
     tasks: Schema.Types.ObjectId[];
     docs: Schema.Types.ObjectId[];
     boards: Schema.Types.ObjectId[];
+    isArchived: boolean;
+    createdBy: Schema.Types.ObjectId;
 }
 
 const ProjectSchema: Schema<IProject> = new Schema<IProject>({
-    user: {
-        type: Schema.Types.ObjectId,
-        required: true
-    },
     name: {
         type: String,
         required: true,
+    },
+    description: {
+        type: String,
+        default: ''
     },
     projectIcon: {
         type: String,
@@ -41,6 +43,16 @@ const ProjectSchema: Schema<IProject> = new Schema<IProject>({
         type: [Schema.Types.ObjectId],
         default: []
     },
+    isArchived: {
+        type: Boolean,
+        default: false
+    },
+    createdBy: {
+        type: Schema.Types.ObjectId,
+        required: true
+    }
 }, {timestamps: true})
 
-export const Project:Model<IProject> = model<IProject>("Project", ProjectSchema)
+const Project:Model<IProject> = model<IProject>("Project", ProjectSchema)
+
+export default Project;

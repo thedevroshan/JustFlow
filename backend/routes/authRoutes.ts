@@ -18,7 +18,7 @@ const router:Router = Router();
 router.post("/register", RegistrationSchemaCheck, Register);
 
 // Verify Email
-router.get("/verify/:userId/:email", VerifyEmail);
+router.get("/verify/:verification_token", VerifyEmail);
 
 // Resend Verification Email
 router.post("/resend-verification-email", IsUser, ResendVerificationEmail);

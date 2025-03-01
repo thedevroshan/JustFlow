@@ -11,3 +11,24 @@ export const INTERNAL_SERVER_ERROR = (res: Response,inDevEnv: ()=>void):void => 
         msg: 'Internal Server Error'
     })
 }
+
+export const BAD_REQUEST = (res: Response,msg:string):void => {
+    res.status(StatusCode.BAD_REQUEST).json({
+        ok: false,
+        msg
+    })
+}
+
+export const NOT_FOUND = (res: Response,msg:string):void => {
+    res.status(StatusCode.NOT_FOUND).json({
+        ok: false,
+        msg
+    })
+}
+
+export const FORBIDDEN = (res: Response,msg:string):void => {
+    res.status(StatusCode.FORBIDDEN).json({
+        ok: false,
+        msg
+    })
+}

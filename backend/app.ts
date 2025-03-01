@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 // Routes
 import authRoutes from "./routes/authRoutes";
 import projectRoutes from "./routes/projectRoutes";
+import taskRoutes from "./routes/taskRoutes";
 
 // DB
 import { connectDB } from "./db/connect";
@@ -22,6 +23,8 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/project", projectRoutes);
+app.use("/api/task", taskRoutes);
+
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port http://localhost:${process.env.PORT}`);

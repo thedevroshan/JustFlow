@@ -6,7 +6,7 @@ import { INTERNAL_SERVER_ERROR } from "../utils/Errors";
 import { StatusCode } from "../utils/StatusCode";
 import User, { IUser } from "../models/user.model";
 
-import { LoginSessionPayload } from "../utils/CreateSendJWT";
+import { JWTSessionPayload } from "../utils/CreateSendJWT";
 
 
 declare module 'express-serve-static-core' {
@@ -26,7 +26,7 @@ export const IsLoggedIn = async (req: Request, res: Response, next: NextFunction
             return;
         }
 
-        const decryptedLoginSession = jwt.verify(login_session, process.env.JWT_SECRET as string) as LoginSessionPayload;
+        const decryptedLoginSession = jwt.verify(login_session, process.env.JWT_SECRET as string) as JWTSessionPayload;
         if(!decryptedLoginSession || !decryptedLoginSession.userId){
             res.status(StatusCode.BAD_REQUEST).json({
                 ok: false,

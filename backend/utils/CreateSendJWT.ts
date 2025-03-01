@@ -8,7 +8,7 @@ import { INTERNAL_SERVER_ERROR } from "./Errors"
 import { IUser } from "../models/user.model"
 import { StatusCode } from "./StatusCode"
 
-export interface LoginSessionPayload extends JwtPayload {
+export interface JWTSessionPayload extends JwtPayload {
     userId: string
 }
 

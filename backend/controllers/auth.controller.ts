@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import bcryptjs from "bcryptjs";
 import path from "path";
-import jwt, {JwtPayload} from "jsonwebtoken";
 
 
 // Models
@@ -13,6 +12,7 @@ import { SendEmailVerification } from "../utils/SendEmailVerification";
 import { StatusCode } from "../utils/StatusCode";
 import { INTERNAL_SERVER_ERROR } from "../utils/Errors";
 import { CreateSendJWT } from "../utils/CreateSendJWT";
+import { ValidateJWT } from "../utils/ValidateJWT";
 
 // Register User
 export const Register = async (req: Request, res: Response):Promise<void> => {
@@ -60,32 +60,27 @@ export const Register = async (req: Request, res: Response):Promise<void> => {
 // Verify Email
 export const VerifyEmail = async (req: Request, res: Response):Promise<void> => {
     try {
-        const { userId, email } = req.params;
+        const { verification_token } = req.params;      
 
-        const user:IUser | null = await User.findOne({_id: userId, email});
+        const userId = await ValidateJWT(res, verification_token);
+
+
+        const user:IUser | null = await User.findById(userId)
         if(!user){
-            res.status(StatusCode.NOT_FOUND).json({
-                ok: false,
-                message: "User not found"
-            })
+            res.status(StatusCode.NOT_FOUND).sendFile(path.join(__dirname, "../public/email-verification-page/invalid-verification-link.html"));
             return;
         }
 
-        const verificationEmailSession:IVerificationEmailSession | null = await VerificationEmailSession.findOne({userId, email});
+        const verificationEmailSession:IVerificationEmailSession | null = await VerificationEmailSession.findOne({userId, email: user.email});
         if(!verificationEmailSession){
-            res.status(StatusCode.NOT_FOUND).json({
-                ok: false,
-                msg: "Verification email session not found"
-            })
+            res.status(StatusCode.NOT_FOUND).sendFile(path.join(__dirname, "../public/email-verification-page/invalid-verification-link.html"));
             return;
         }
 
         if(verificationEmailSession.expiresAt < Date.now()){
             await VerificationEmailSession.deleteOne({_id: verificationEmailSession._id});
-            res.status(StatusCode.BAD_REQUEST).json({
-                ok: false,
-                msg: "Verification email session expired"
-            })
+            
+            res.status(StatusCode.NOT_FOUND).sendFile(path.join(__dirname, "../public/email-verification-page/invalid-verification-link.html"));
             return;
         }
 
@@ -101,7 +96,7 @@ export const VerifyEmail = async (req: Request, res: Response):Promise<void> => 
         user.isVerified = true;
         await user.save();
 
-        res.sendFile(path.join(__dirname, "../public/email-verification-page/verified.html"));
+        res.status(StatusCode.OK).sendFile(path.join(__dirname, "../public/email-verification-page/verified.html"));
     } catch (error) {
         INTERNAL_SERVER_ERROR(res, ():void=>{
             console.log(error)
