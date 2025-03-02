@@ -5,7 +5,8 @@ import {
     Register,
     VerifyEmail,
     ResendVerificationEmail,
-    Login
+    Login,
+    Logout
 } from "../controllers/auth.controller";
 
 // Middleware
@@ -25,6 +26,9 @@ router.post("/resend-verification-email", IsUser, ResendVerificationEmail);
 
 // Login User
 router.get("/login",IsUser, Login);
+
+// Logout User
+router.get("/logout",IsUser, Logout);
 
 
 export default router;

@@ -152,3 +152,20 @@ export const Login = async (req: Request, res: Response):Promise<void> => {
         })
     }
 }
+
+
+// Logout User
+export const Logout = async (req: Request, res: Response):Promise<void> => {
+    try {
+        res.cookie("token", "", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            maxAge: 0,
+            sameSite: "none"
+        }).json({ok: true, msg: "Logged out successfully"})
+    } catch (error) {
+        INTERNAL_SERVER_ERROR(res, ():void=>{
+            console.log(error)
+        })
+    }
+}
