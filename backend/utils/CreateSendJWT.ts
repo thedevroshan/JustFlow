@@ -16,7 +16,11 @@ export const  CreateSendJWT = async (user:IUser , res: Response):Promise<void> =
     try {
         const token:string = jwt.sign({userId: user._id}, process.env.JWT_SECRET as string, {expiresIn: "28d", algorithm: "HS512"});
 
-        process.env.NODE_ENV as string === 'development'?res.status(StatusCode.OK).json({ok: true, msg: 'Logged In',token}):res.cookie('login_session', token)
+        res.cookie('login_session', token, {
+            httpOnly:true,
+            secure: process.env.NODE_ENV as string === 'production',
+            sameSite: 'none'
+        }).json({ok: true, msg: 'Logged In',token})
     } catch (error) {
         INTERNAL_SERVER_ERROR(res, ():void => {
             console.log(error)

@@ -117,7 +117,7 @@ export const ResendVerificationEmail = async (req: Request, res: Response):Promi
 // Login User
 export const Login = async (req: Request, res: Response):Promise<void> => {
     try {
-        const {password} = req.body;
+        const {password} = req.query;
 
         if(!req.user.isVerified){
             const isEmailSent:boolean = await SendEmailVerification(req.user.email, req.user.name, req.user._id as string)
@@ -135,7 +135,7 @@ export const Login = async (req: Request, res: Response):Promise<void> => {
             return;
         }
 
-        const isPasswordCorrect:boolean = await bcryptjs.compare(password, req.user.password);
+        const isPasswordCorrect:boolean = await bcryptjs.compare(password as string, req.user.password);
         if(!isPasswordCorrect){
             res.status(StatusCode.BAD_REQUEST).json({
                 ok: false,

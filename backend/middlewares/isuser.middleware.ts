@@ -10,7 +10,7 @@ declare module 'express-serve-static-core' {
 
 export const IsUser = async (req: Request, res: Response, next: NextFunction):Promise<void> => {
     try {
-        const {email, userId}:{email?:string, userId?:string} = req.body;
+        const {email, userId}:{email?:string, userId?:string} = req.query;
 
         const isUser:IUser | null = await User.findOne({email}) || await User.findById(userId);
         if(!isUser){
