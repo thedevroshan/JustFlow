@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 // Routes
 import authRoutes from "./routes/authRoutes";
@@ -13,6 +14,14 @@ import { connectDB } from "./db/connect";
 dotenv.config();
 
 const app = express();
+
+// cors
+app.use(cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
 
 connectDB();
 

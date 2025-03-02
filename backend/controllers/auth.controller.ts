@@ -5,7 +5,6 @@ import path from "path";
 
 // Models
 import User, { IUser } from "../models/user.model";
-import VerificationEmailSession, { IVerificationEmailSession } from "../models/verification-email-session.model";
 
 // Utils
 import { SendEmailVerification } from "../utils/SendEmailVerification";
@@ -71,18 +70,6 @@ export const VerifyEmail = async (req: Request, res: Response):Promise<void> => 
             return;
         }
 
-        const verificationEmailSession:IVerificationEmailSession | null = await VerificationEmailSession.findOne({userId, email: user.email});
-        if(!verificationEmailSession){
-            res.status(StatusCode.NOT_FOUND).sendFile(path.join(__dirname, "../public/email-verification-page/invalid-verification-link.html"));
-            return;
-        }
-
-        if(verificationEmailSession.expiresAt < Date.now()){
-            await VerificationEmailSession.deleteOne({_id: verificationEmailSession._id});
-            
-            res.status(StatusCode.NOT_FOUND).sendFile(path.join(__dirname, "../public/email-verification-page/invalid-verification-link.html"));
-            return;
-        }
 
         if(user.isVerified){
             res.status(StatusCode.BAD_REQUEST).json({
@@ -92,7 +79,6 @@ export const VerifyEmail = async (req: Request, res: Response):Promise<void> => 
             return;
         }
 
-        await VerificationEmailSession.deleteOne({_id: verificationEmailSession._id});
         user.isVerified = true;
         await user.save();
 

@@ -1,7 +1,6 @@
 import { Transporter } from "./Transporter";
 import fs from "fs/promises";
 import path from "path";
-import VerificationEmailSession from "../models/verification-email-session.model";
 import jwt from 'jsonwebtoken'
 
 export const SendEmailVerification = async (email:string, name:string,userId:string):Promise<boolean> => {
@@ -16,11 +15,6 @@ export const SendEmailVerification = async (email:string, name:string,userId:str
             subject: "Verify Your Email",
             html: htmlContent.replace("{{verificationLink}}", `${process.env.BACKEND_URL}/api/auth/verify/${verificationToken}`)
         }
-        await VerificationEmailSession.create({
-            userId,
-            email,
-            expiresAt: Date.now() + 2 * 60 * 1000 // 2 minutes
-        });
         await Transporter.sendMail(mailOptions);
         return true;
     } catch (error) {
