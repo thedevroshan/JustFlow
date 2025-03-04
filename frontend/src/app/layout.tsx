@@ -2,16 +2,11 @@ import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
 
-// Components
-import Navbar from "./components/Navbar";
-
-const robotoFlex = Roboto_Flex({
-  subsets: ["latin"],
-  variable: "--font-roboto-flex",
-  weight: ["400", "500", "600", "700"],
+const robotFlex = Roboto_Flex({
+  weight: ['400',"600","600", '700'],
   display: "swap",
+  subsets: ["latin"],
   style: "normal",
-  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -27,9 +22,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${robotoFlex.className} antialiased vsc-initialized`}
+        className={`${robotFlex.className} antialiased vsc-initialized`}
       >
-        <Navbar />
         {children}
       </body>
     </html>
