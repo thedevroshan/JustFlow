@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Roboto_Flex } from "next/font/google";
 import "./globals.css";
 
+// Components
+import { QueryProvider } from "./components/QueryProvider";
+import { Redirection } from "./utils/Redirection";
+
 const robotFlex = Roboto_Flex({
   weight: ['400',"600","600", '700'],
   display: "swap",
@@ -24,7 +28,10 @@ export default function RootLayout({
       <body
         className={`${robotFlex.className} antialiased vsc-initialized`}
       >
+        <QueryProvider>
+          <Redirection/>
         {children}
+        </QueryProvider>
       </body>
     </html>
   );

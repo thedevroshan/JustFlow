@@ -12,15 +12,16 @@ export interface JWTSessionPayload extends JwtPayload {
     userId: string
 }
 
-export const  CreateSendJWT = async (user:IUser , res: Response):Promise<void> => {
+export const  CreateSendJWT = async (user:IUser , res: Response):Promise<void | string> => {
     try {
         const token:string = jwt.sign({userId: user._id}, process.env.JWT_SECRET as string, {expiresIn: "28d", algorithm: "HS512"});
 
         res.cookie('login_session', token, {
             httpOnly:true,
-            secure: process.env.NODE_ENV as string === 'production',
+            secure: true,
             sameSite: 'none'
-        }).json({ok: true, msg: 'Logged In',token})
+        })
+        return token;
     } catch (error) {
         INTERNAL_SERVER_ERROR(res, ():void => {
             console.log(error)

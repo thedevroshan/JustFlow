@@ -7,6 +7,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes";
 import projectRoutes from "./routes/projectRoutes";
 import taskRoutes from "./routes/taskRoutes";
+import userRoutes from "./routes/userRoutes";
 
 // DB
 import { connectDB } from "./db/connect";
@@ -33,7 +34,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/project", projectRoutes);
 app.use("/api/task", taskRoutes);
-
+app.use("/api/user", userRoutes);
 
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port http://localhost:${process.env.PORT}`);

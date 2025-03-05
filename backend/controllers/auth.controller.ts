@@ -144,8 +144,13 @@ export const Login = async (req: Request, res: Response):Promise<void> => {
             return;
         }
 
-        await CreateSendJWT(req.user,res);
+        const token:string | void = await CreateSendJWT(req.user,res);
 
+        res.status(StatusCode.OK).json({
+            ok: true,
+            msg: 'Login Successful',
+            token
+        })
     } catch (error) {
         INTERNAL_SERVER_ERROR(res, ():void=>{
             console.log(error)
