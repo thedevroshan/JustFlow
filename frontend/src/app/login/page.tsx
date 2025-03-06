@@ -50,7 +50,7 @@ const LoginPage = () => {
           Back To Home
         </Link>
 
-        <div className="flex flex-col items-start justify-start gap-2 w-[70vw] sm:w-[50vw] md:w-[40vw] lg:w-[28vw] h-fit border border-primary-border bg-white rounded-lg shadow-lg px-3 py-3">
+        <div className="flex flex-col items-start justify-start gap-2 w-[70vw] sm:w-[50vw] md:w-[40vw] lg:w-[28vw] h-fit border border-secondary-border bg-white rounded-lg shadow-lg px-3 py-3">
           <span className="text-2xl font-semibold">Login</span>
 
           {fetchingError && (
@@ -62,7 +62,7 @@ const LoginPage = () => {
           <input
             type="text"
             placeholder="Email"
-            className="w-full py-1 font-medium text-lg shadow-xs border border-primary-border rounded-md px-3 outline-none"
+            className="w-full py-1 font-medium text-lg shadow-xs border border-secondary-border rounded-md px-3 outline-none"
             value={email}
             onChange={(e) => {
               setEmail(e.target.value);
@@ -85,7 +85,7 @@ const LoginPage = () => {
             <input
               type={showPassword}
               placeholder="Password"
-              className="w-full py-1 font-medium text-lg shadow-xs border border-primary-border rounded-md px-3 select-none outline-none"
+              className="w-full py-1 font-medium text-lg shadow-xs border border-secondary-border rounded-md px-3 select-none outline-none"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
@@ -130,10 +130,10 @@ const LoginPage = () => {
           <span className="text-xl text-primary-text mx-auto">OR</span>
 
           <div className="w-full flex flex-col gap-2 justify-between items-center">
-            <button className="bg-white w-full py-1 border border-primary-border rounded-lg hover:bg-gray-200 cursor-pointer shadow-2xs transition-all duration-150">
+            <button className="bg-white w-full py-1 border border-secondary-border rounded-lg hover:bg-gray-200 cursor-pointer shadow-2xs transition-all duration-150">
               Continue With Google
             </button>
-            <button className="bg-white w-full py-1 border border-primary-border rounded-lg hover:bg-gray-200 cursor-pointerr shadow-2xs transition-all duration-150 cursor-pointer">
+            <button className="bg-white w-full py-1 border border-secondary-border rounded-lg hover:bg-gray-200 cursor-pointerr shadow-2xs transition-all duration-150 cursor-pointer">
               Continue With GitHub
             </button>
           </div>

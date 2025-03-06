@@ -14,5 +14,5 @@ export const SignUpAPI =  async ({name,email, password}:{name:string,email: stri
         },
         body: JSON.stringify({name,email,password})
     });
-    return await resposne.json();
+    return await resposne.json();   
 }

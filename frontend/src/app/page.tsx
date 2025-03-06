@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-    <nav className="w-[100vw] h-[8vh] shadow-sm flex items-center px-4 justify-between border border-primary-border">
+    <nav className="w-[100vw] h-[8vh] shadow-sm flex items-center px-4 justify-between border border-secondary-border">
 
 
       <span className="text-xl font-semibold">NexFlow</span>

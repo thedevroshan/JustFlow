@@ -2,29 +2,54 @@
 
 :root {
   --background: #000000;
-  --foreground: #171717;
-  --primary-border: #16161627;
+  --foreground: #18181a;
+  --primary-border: #202020;
+  --secondary-border: #00000031;
   --black-btn-hover: #1e2939;
   --transparent-btn-hover: #f3f4f6; 
-  --primary-text: #484848;
+  --primary-text: #919199;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-primary-border: var(--primary-border);
+  --color-secondary-border: var(--secondary-border);
   --color-black-btn-hover: var(--black-btn-hover);
   --color-transparent-btn-hover: var(--transparent-btn-hover);
   --color-primary-text: var(--primary-text);
-}
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --animate-slide-up: slide-up 0.4s ease-in-out forwards;
+
+  @keyframes slide-up {
+    from {
+      transform: translateY(55%);
+      opacity: 0;
+    },
+    to {
+      transform: translateY(0%);
+      opacity: 1;
+    }
   }
 }
 
-body {
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
 
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--foreground);
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-border);
 }

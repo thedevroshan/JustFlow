@@ -5,6 +5,7 @@ import "./globals.css";
 // Components
 import { QueryProvider } from "./components/QueryProvider";
 import { Redirection } from "./utils/Redirection";
+import Navbar from "./components/Navbar";
 
 const robotFlex = Roboto_Flex({
   weight: ['400',"600","600", '700'],
@@ -26,9 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${robotFlex.className} antialiased vsc-initialized`}
+        className={`${robotFlex.className} flex antialiased vsc-initialized`}
       >
         <QueryProvider>
+          <Navbar/>
           <Redirection/>
         {children}
         </QueryProvider>

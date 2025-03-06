@@ -89,19 +89,19 @@ const ResetPasswordPage = () => {
   return (
     <>
     <section className='w-full h-[100vh] flex items-center justify-center'>
-      <div className='w-[28vw] h-fit py-4 rounded-lg border border-primary-border flex flex-col items-start justify-center px-5 select-none gap-3 shadow-sm'>
+      <div className='w-[28vw] h-fit py-4 rounded-lg border border-secondary-border flex flex-col items-start justify-center px-5 select-none gap-3 shadow-sm'>
         <h2 className='text-lg font-semibold'>Reset Password</h2>
 
         {fetchingError && <span className='text-red-500 mx-auto text-sm'>{fetchingError}</span>}
 
-        <input type={showPassword} placeholder='New Password' className='w-full px-2 border border-primary-border text-lg py-1 rounded-lg outline-none shadow-xs' value={password} onChange={(e)=>{
+        <input type={showPassword} placeholder='New Password' className='w-full px-2 border border-secondary-border text-lg py-1 rounded-lg outline-none shadow-xs' value={password} onChange={(e)=>{
           setPassword(e.target.value)
         }} onKeyDown={async (e)=>{
           if(e.key == 'Enter'){
             await HandleResetPassword()
           }
         }}/>
-        <input type={showPassword} placeholder='Confirm Password' className='w-full px-2 border border-primary-border text-lg py-1 rounded-lg outline-none shadow-xs' value={confirmPassword} onChange={(e)=>{
+        <input type={showPassword} placeholder='Confirm Password' className='w-full px-2 border border-secondary-border text-lg py-1 rounded-lg outline-none shadow-xs' value={confirmPassword} onChange={(e)=>{
           setConfirmPassword(e.target.value)
         }} onKeyDown={async (e)=>{
           if(e.key == 'Enter'){

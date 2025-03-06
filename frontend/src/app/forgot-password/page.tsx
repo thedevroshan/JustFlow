@@ -38,7 +38,7 @@ const ForgotPasswordPage = () => {
 
   return (
     <section className="w-full h-[100vh] flex items-center justify-center">
-      <div className="w-[28vw] h-fit py-4 rounded-lg border border-primary-border flex flex-col items-start justify-center px-5 select-none gap-3 shadow-sm" onKeyDown={async (e)=>{
+      <div className="w-[28vw] h-fit py-4 rounded-lg border border-secondary-border flex flex-col items-start justify-center px-5 select-none gap-3 shadow-sm" onKeyDown={async (e)=>{
         if(e.key == 'Enter'){
             await HandleForgotPassword()
         }
@@ -47,7 +47,7 @@ const ForgotPasswordPage = () => {
 
         {fetcingError && <span className="text-red-500 text-sm mx-auto">{fetcingError}</span>}
 
-        <input type="text" placeholder="Email" className="w-full outline-none border border-primary-border py-1 text-lg px-3 rounded-lg shadow-xs" value={email} onChange={(e)=>{
+        <input type="text" placeholder="Email" className="w-full outline-none border border-secondary-border py-1 text-lg px-3 rounded-lg shadow-xs" value={email} onChange={(e)=>{
             setEmail(e.target.value)
         }}/>
 
