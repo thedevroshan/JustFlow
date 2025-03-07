@@ -284,6 +284,32 @@ export const GetProject = async (req: Request, res: Response):Promise<void> => {
     
 }
 
+// Get Project
+export const GetAllProject = async (req: Request, res: Response):Promise<void> => {
+    try {
+        const allProjects = await Project.find({createdBy: req.user.id});
+        const joinedProjects = await Project.find({members: req.user.id, createdBy: {$ne: req.user.id}});
+
+        if(!allProjects) {
+            NOT_FOUND(res, "No projects found");
+            return;
+        }
+
+        res.status(StatusCode.OK).json({
+            ok: true,
+            msg: "All projects fetched successfully",
+            projects: allProjects,
+            joinedProjects: joinedProjects
+        })
+    }
+    catch(error){
+        INTERNAL_SERVER_ERROR(res,():void=>{
+            console.log(error)
+        })
+    }
+    
+}
+
 // Delete Project
 export const DeleteProject = async (req: Request, res: Response):Promise<void> => {
     try {

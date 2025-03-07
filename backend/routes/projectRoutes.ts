@@ -14,6 +14,7 @@ import {
     GetInvitationLink,
     GetProjectMembers,
     GetProject,
+    GetAllProject,
     DeleteProject
  } from '../controllers/project.controller';
 
@@ -40,6 +41,8 @@ router.get('/:projectId/invitation-link',IsLoggedIn, GetInvitationLink)
 router.get('/:projectId/members',IsLoggedIn, GetProjectMembers)
 
 router.get('/:projectId',IsLoggedIn, GetProject)
+
+router.get('/',IsLoggedIn, GetAllProject)
 
 router.delete('/:projectId',IsLoggedIn, IsAuthorizedToEditProject, DeleteProject)
 

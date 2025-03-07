@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 
 // API
@@ -8,6 +8,8 @@ import { CreateProjectAPI } from '../api/projectAPI'
 
 
 const CreateProject = ({setCreateProjectDialog}: {setCreateProjectDialog: (value: boolean) => void}) => {
+  const queryClient = useQueryClient()
+
   const [projectName, setProjectName] = useState<string>('')
   const [error, setError] = useState<string>('')
 
@@ -18,6 +20,7 @@ const CreateProject = ({setCreateProjectDialog}: {setCreateProjectDialog: (value
         setError(data.message)
         return
       }
+      queryClient.invalidateQueries({queryKey: ['allProjects']})
       setCreateProjectDialog(false)
       setProjectName('')
       setError('')

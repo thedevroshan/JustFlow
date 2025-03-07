@@ -32,7 +32,7 @@ export default function RootLayout({
         <QueryProvider>
           <Navbar/>
           <Redirection/>
-        {children}
+          {children}
         </QueryProvider>
       </body>
     </html>

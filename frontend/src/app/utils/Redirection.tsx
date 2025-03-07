@@ -28,6 +28,9 @@ export const Redirection = () => {
                     return;
                 }
             }
+        },
+        onError: (error) => {
+            console.log('Something went wrong while checking if user is logged in')
         }
     })
 
