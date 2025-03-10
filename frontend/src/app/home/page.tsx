@@ -43,16 +43,18 @@ const HomePage = () => {
   // Stores
   const { yourProjects, joinedProjects } = useProjectStore();
 
-  const { data: allProjects, isLoading: isLoadingAllProjects } = useQuery({
+  // Query
+  const { data: allProjects, isLoading: isLoadingAllProjects, } = useQuery({
     queryKey: ["allProjects"],
     queryFn: () => GetAllProjectsAPI(),
   });
 
+
   useEffect(() => {
     if (allProjects) {
-      if (activeProject == null) {
-        setActiveProject(allProjects.projects[0]._id);
-        router.push(`/home?project=${allProjects.projects[0]._id}&managing-tool=scheduling`);
+      if (activeProject == null && allProjects?.projects?.length <= 0) {
+        setActiveProject(allProjects?.projects[0]?._id);
+        router.push(`/home?project=${allProjects?.projects[0]?._id}&managing-tool=scheduling`);
       }
       setYourProjects(allProjects.projects);
       setJoinedProjects(allProjects.joinedProjects);
@@ -64,6 +66,7 @@ const HomePage = () => {
       setActiveProject(searchParams.get("project") as string);
     }
   }, [searchParams.get("project")]);
+
 
   return (
     <>
@@ -175,7 +178,7 @@ const HomePage = () => {
         </div>
       )}
 
-      <ProjectView currentProject={yourProjects?.find(project => project._id == activeProject)}/>
+      <ProjectView currentProjectId={activeProject}/>
     </>
   );
 };

@@ -1,11 +1,21 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { useQueryClient, useMutation, useQuery } from "@tanstack/react-query";
+
+// API
+import {
+  ChangeScheduleViewStyleAPI,
+  GetScheduleViewStyleAPI,
+} from "../api/projectAPI";
+
+// Stores
+import useProjectStore from "../stores/ProjectStore";
 
 interface ProjectViewProps {
-  currentProject: any;
+  currentProjectId: any;
 }
 
 enum EProjectManagingTabs {
@@ -14,14 +24,58 @@ enum EProjectManagingTabs {
   BOARDS = "boards",
 }
 
+enum ESchedulingViewStyle {
+  TABLE = "table",
+  KANBAN = "kanban",
+  TIMELINE = "timeline",
+}
 
-const ProjectView = ({ currentProject }: ProjectViewProps) => {
+const ProjectView = ({ currentProjectId }: ProjectViewProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const queryClient = useQueryClient();
+  
+  // Stores
+  const {yourProjects} = useProjectStore()
 
-  const [currentManagingTool, setCurrentManagingTool] = useState<string | null>(
-    searchParams.get("managing-tool")
-  );
+
+  const [currentProject, setCurrentProject] = useState<any>()
+  const [currentScheduleViewStyle, setCurrentScheduleViewStyle] =
+    useState<ESchedulingViewStyle>(ESchedulingViewStyle.TABLE);
+
+  // Mutations
+  const { mutateAsync: ChangeScheduleViewStyle } = useMutation({
+    mutationFn: ChangeScheduleViewStyleAPI,
+    onSuccess: (data) => {
+      // Toast
+
+      // Invalidate Query
+      if (data.ok) {
+        queryClient.invalidateQueries({ queryKey: ["scheduleViewStyle"] });
+      }
+    },
+    onError: (error) => {
+      console.warn("Something went wrong.");
+    },
+  });
+
+  const {data:viewStyle} = useQuery({
+    queryKey: ['scheduleViewStyle'],
+    queryFn: () => currentProjectId ? GetScheduleViewStyleAPI({projectId: currentProjectId}):Promise.reject('Project Id is not defined.'),
+    enabled: !!currentProjectId
+  })
+
+  
+  useEffect(() => {
+    queryClient.invalidateQueries({queryKey: ['scheduleViewStyle']})
+    setCurrentScheduleViewStyle(ESchedulingViewStyle[viewStyle?.view?.toString()?.toUpperCase() as keyof typeof ESchedulingViewStyle])
+  })
+
+  useEffect(() => {
+    setCurrentProject(yourProjects.find(project => project._id == currentProjectId))
+  })
+
+
 
   const ChangeManagingToolQuery = (managingTool: EProjectManagingTabs) => {
     router.push(
@@ -103,8 +157,8 @@ const ProjectView = ({ currentProject }: ProjectViewProps) => {
           <span className="text-white text-[3rem] font-semibold">
             {currentProject?.name}
           </span>
-
-          <p className="w-[37vw] h-[8vh] text-primary-text">
+          
+          <p className="w-[37vw] h-[12vh] text-primary-text overflow-hidden">
             {currentProject?.description}
           </p>
         </div>
@@ -154,19 +208,26 @@ const ProjectView = ({ currentProject }: ProjectViewProps) => {
       </div>
 
       {/* Scheduling */}
-      <section className="w-full h-fit flex flex-col items-start justify-start gap-6">
+      {searchParams.get('managing-tool') == EProjectManagingTabs.SCHEDULING && <section className="w-full h-fit flex flex-col items-start justify-start gap-6">
         <select
           className="text-primary-text border border-primary-border bg-foreground px-2 w-44 py-2 rounded-lg outline-none cursor-pointer selection:bg-foreground/90"
+          value={
+            currentScheduleViewStyle
+          }
+          onChange={async (e) => {
+            await ChangeScheduleViewStyle({
+              projectId: currentProjectId,
+              viewStyle: e.target.value,
+            });
+          }}
         >
           <option value="table">Table</option>
           <option value="kanban">Kanban</option>
           <option value="timeline">Timeline</option>
         </select>
 
-        <div className="w-full h-[80vh]">
-
-        </div>
-      </section>
+        <div className="w-full h-[80vh]"></div>
+      </section>}
     </section>
   );
 };
