@@ -2,6 +2,12 @@ import mongoose from "mongoose";
 import { Schema,Document,Model, model } from "mongoose";
 
 
+export enum EScheduleViewStyle {
+    TABLE = 'table',
+    KANBAN = 'kanban',
+    TIMELINE =  'timeline'
+}
+
 export interface IProject extends Document {
     name: string;
     description: string;
@@ -11,6 +17,7 @@ export interface IProject extends Document {
     docs: Schema.Types.ObjectId[];
     boards: Schema.Types.ObjectId[];
     isArchived: boolean;
+    scheduleViewStyle: EScheduleViewStyle;
     createdBy: Schema.Types.ObjectId;
 }
 
@@ -46,6 +53,11 @@ const ProjectSchema: Schema<IProject> = new Schema<IProject>({
     isArchived: {
         type: Boolean,
         default: false
+    },
+    scheduleViewStyle: {
+        type: String,
+        enum: Object.values(EScheduleViewStyle),
+        default: EScheduleViewStyle.TABLE
     },
     createdBy: {
         type: Schema.Types.ObjectId,

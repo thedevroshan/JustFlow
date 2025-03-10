@@ -5,7 +5,7 @@ import { StatusCode } from "../utils/StatusCode";
 import { INTERNAL_SERVER_ERROR, BAD_REQUEST, NOT_FOUND } from "../utils/Errors";
 
 // Models
-import Project, { IProject} from "../models/project.model";
+import Project, { IProject, EScheduleViewStyle} from "../models/project.model";
 import User from "../models/user.model";
 
 
@@ -186,6 +186,70 @@ export const JoinProject = async (req: Request, res: Response):Promise<void> => 
     }
 }
 
+// Change Schedule View Style 
+export const ChangeScheduleViewStyle = async (req: Request, res: Response):Promise<void> => {
+    try {
+        const {view} = req.query;
+        const {projectId} = req.params;
+
+        const isProject = await Project.findById(projectId)
+        if(!isProject){
+            res.status(StatusCode.NOT_FOUND).json({
+                ok: false,
+                msg: 'Project Not Found'
+            })
+            return;
+        }
+
+        const style = Object.keys(EScheduleViewStyle).find(style => style === view?.toString().toUpperCase()) as keyof typeof EScheduleViewStyle
+        if(style === undefined){
+            res.status(StatusCode.NOT_FOUND).json({
+                ok: false,
+                msg: 'Style you provided is not available'
+            })
+            return;
+        }
+
+        isProject.scheduleViewStyle = EScheduleViewStyle[style]
+        await isProject.save()
+
+        res.status(StatusCode.OK).json({
+            ok: true,
+            msg:'Style Updated Successfully'
+        })        
+    } catch (error) {
+        INTERNAL_SERVER_ERROR(res, () => {
+            console.log(error)
+        })
+    }
+}
+
+// Get Schedule View Style
+export const ScheduleViewStyle = async (req: Request, res: Response):Promise<void> => {
+    try {
+        const {projectId} = req.params
+
+        const isProject = await Project.findById(projectId)
+        if(!isProject){
+            res.status(StatusCode.NOT_FOUND).json({
+                ok: false,
+                msg: 'Project Not Found'
+            })
+            return;
+        }
+
+        res.status(StatusCode.OK).json({
+            ok: true,
+            msg: 'View style fetched successfully',
+            view: isProject.scheduleViewStyle
+        })
+    } catch (error) {
+        INTERNAL_SERVER_ERROR(res, ()=>{
+            console.log(error)
+        })
+    }
+}
+
 
 // Get Invitation Link
 export const GetInvitationLink = async (req: Request, res: Response):Promise<void> => {
@@ -284,13 +348,13 @@ export const GetProject = async (req: Request, res: Response):Promise<void> => {
     
 }
 
-// Get Project
+// Get All Project
 export const GetAllProject = async (req: Request, res: Response):Promise<void> => {
     try {
-        const allProjects = await Project.find({createdBy: req.user.id});
+        const projects = await Project.find({createdBy: req.user.id});
         const joinedProjects = await Project.find({members: req.user.id, createdBy: {$ne: req.user.id}});
 
-        if(!allProjects) {
+        if(projects.length == 0 && joinedProjects.length == 0) {
             NOT_FOUND(res, "No projects found");
             return;
         }
@@ -298,8 +362,8 @@ export const GetAllProject = async (req: Request, res: Response):Promise<void> =
         res.status(StatusCode.OK).json({
             ok: true,
             msg: "All projects fetched successfully",
-            projects: allProjects,
-            joinedProjects: joinedProjects
+            projects,
+            joinedProjects
         })
     }
     catch(error){

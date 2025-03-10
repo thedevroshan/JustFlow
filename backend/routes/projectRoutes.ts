@@ -15,7 +15,9 @@ import {
     GetProjectMembers,
     GetProject,
     GetAllProject,
-    DeleteProject
+    DeleteProject,
+    ChangeScheduleViewStyle,
+    ScheduleViewStyle
  } from '../controllers/project.controller';
 
 // Middlewares
@@ -35,6 +37,10 @@ router.put('/archive/:projectId',IsLoggedIn, IsAuthorizedToEditProject, ArchiveP
 router.put('/unarchive/:projectId',IsLoggedIn, IsAuthorizedToEditProject, UnarchiveProject)
 
 router.put('/:projectId/join',IsLoggedIn, JoinProject)
+
+router.put('/:projectId/schedule-view-style',IsLoggedIn, ChangeScheduleViewStyle)
+
+router.get('/:projectId/schedule-view-style',IsLoggedIn, ScheduleViewStyle)
 
 router.get('/:projectId/invitation-link',IsLoggedIn, GetInvitationLink)
 
